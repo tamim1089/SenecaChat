@@ -1,0 +1,22 @@
+{
+  "name": "senecachat",
+  "version": "17.0.0",
+  "description": "SenecaChat v17 \u2014 Local Agentic AI | Reflexion | Context Engineering | Plan-Execute | SQLite | Auth",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "node-fetch": "^2.7.0",
+    "better-sqlite3": "^11.10.0",
+    "pdf-parse": "^1.1.1",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.2.0",
+    "uuid": "^9.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0 <25.0.0"
+  }
+}

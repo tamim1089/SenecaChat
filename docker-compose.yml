@@ -1,0 +1,52 @@
+########################################################################
+# SenecaChat v19 — docker-compose
+# Usage:
+#   docker compose up -d          # start (builds if needed)
+#   docker compose down           # stop (data persists in volumes)
+#   docker compose build --no-cache  # rebuild image
+#   docker compose logs -f        # tail logs
+#   docker compose exec seneca bash  # root shell inside container
+########################################################################
+version: '3.9'
+
+services:
+  seneca:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: senecachat
+    restart: unless-stopped
+    # Full root access + Docker-in-Docker capability
+    privileged: true
+    user: root
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      # Ollama host — points to host machine's Ollama
+      - OLLAMA_HOST=http://host-gateway:11434
+    extra_hosts:
+      - "host-gateway:host-gateway"
+    volumes:
+      # Persistent SQLite DB + all app data
+      - seneca_data:/app/data
+      # Persistent workspace for the agent (files, projects, etc)
+      - seneca_workspace:/workspace
+      # Optional: mount your SSH keys so the agent can push to GitHub
+      # - ~/.ssh:/root/.ssh:ro
+      # Optional: mount Docker socket for container management
+      # - /var/run/docker.sock:/var/run/docker.sock
+    working_dir: /app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+
+volumes:
+  seneca_data:
+    driver: local
+  seneca_workspace:
+    driver: local
